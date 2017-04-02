@@ -1,0 +1,112 @@
+#include <Adafruit_NeoPixel.h>  //sets up a neopixel sketch
+int red = 0;    //creates red as a variable for hex values 1 through 255
+int green = 0;  //creates green as a variable for hex values 1 through 255
+int blue = 0;   //creates blue as a variable for hex values 1 through 255
+
+int inByte = 0;  //creates a byte variable to store the serial communication
+
+      #define PIN 5             //neopixel strip attacked to digital pin 5
+
+// Parameter 1 = number of pixels in strip
+// Parameter 2 = pin number (most are valid)
+// Parameter 3 = pixel type flags, add together as needed:
+//   NEO_KHZ800  800 KHz bitstream (most NeoPixel products w/WS2812 LEDs)
+//   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
+//   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
+//   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
+
+void setup() {
+  // put your setup code here, to run once:
+  strip.begin();
+  strip.show();   //Initialize all pixels to 'off'
+  
+  Serial.begin(9600); //begins serial communication for tracking buttonpresses
+  Serial.println("resetting");  //writes RESETTING into the serial communication
+
+  strip.setBrightness(128);  //sets brightness of the strip
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+  //creates a loop running 60 times each time increasing variable i and writing blue to that pixel
+  for (int a=0; a < 60; a++)  {
+  
+  if(Serial.available() > 0)  {
+    inByte = Serial.read(); //if something is sent to the serial monitor this picks it up and writes it to inByte
+
+    if(inByte == 'r') {
+      
+      //if the byte is 'r' then the color is set to red
+      
+      red = 255;
+      blue = 0;
+      green = 0;
+
+      Serial.println("red");
+    }
+
+    if(inByte == 'b') {
+      
+    //if the byte is 'b' then the color is set to blue
+      
+      red = 0;
+      blue = 255;
+      green = 0;
+
+      Serial.println("blue");
+    }
+
+    if(inByte == 'g') {
+      
+      //if the byte is 'g' then the color is set to green
+      
+      red = 0;
+      blue = 0;
+      green = 255;
+
+      Serial.println("green");
+    }
+
+    if(inByte == 't') {
+
+      //if the byte is 't' then the color is set to teal
+
+      red = 0;
+      blue = 255;
+      green = 255;
+
+      Serial.println("teal");
+    }
+
+    if(inByte == 'y') {
+
+      //if the byte is 'y' then the color is set to yellow
+
+      red = 255;
+      blue = 0;
+      green = 255;
+
+      Serial.println("yellow");
+    }
+
+    if(inByte == 'p') {
+
+      //if the byte is 'p' then the color is set to purple
+
+      red = 255;
+      blue = 255;
+      green = 0;
+
+      Serial.println("purple");
+    }
+
+  }
+  
+  strip.setPixelColor(a,random(red),random(green),random(blue));
+  strip.setPixelColor(random(60),random(red),random(green),random(blue));
+  strip.show();
+  delay(50);
+  }
+}
